@@ -29,7 +29,35 @@ yarn add interaxtion
 
 ## Usage
 
-### Browser-Based Testing (Vitest Browser Mode, Playwright, Cypress)
+### Playwright / Browser Context Testing
+
+For Playwright or other browser automation tools, use the standalone browser bundle that can be injected into the page:
+
+```typescript
+import { test, expect } from '@playwright/test'
+
+test('dialog is accessible', async ({ page }) => {
+  // Navigate to your page
+  await page.goto('https://your-app.com')
+
+  // Inject the interaxtion browser bundle
+  await page.addScriptTag({
+    path: 'node_modules/interaxtion/dist/browser.js'
+  })
+
+  // Run analysis in the browser context
+  const results = await page.evaluate(() => {
+    const runner = new window.interaxtion.BrowserRunner()
+    return runner.run()
+  })
+
+  // Assert no accessibility errors
+  expect(results.summary.errors).toBe(0)
+  expect(results.summary.patternsFound).toBeGreaterThan(0)
+})
+```
+
+### Browser-Based Testing (Vitest Browser Mode)
 
 Use `BrowserRunner` to analyze the actual rendered DOM in browser tests:
 
