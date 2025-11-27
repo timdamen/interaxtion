@@ -115,11 +115,9 @@ export async function analyze(
 ): Promise<AnalysisResults> {
   const driver = detectDriver(page)
 
-  // Inject bundle if not already done
-  // Check both our WeakSet and the actual page state
-  const alreadyInjected = injectedPages.has(page) || (await isBundleLoaded(page))
-
-  if (!alreadyInjected) {
+  // Always check if bundle is actually loaded in the page
+  // The page context resets on navigation (page.goto()), so we can't rely on WeakSet alone
+  if (!(await isBundleLoaded(page))) {
     await injectBundle(page, driver)
     injectedPages.add(page)
   }
