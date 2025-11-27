@@ -1,7 +1,10 @@
 import { defineConfig } from 'tsdown'
 
 export default defineConfig({
-  exports: true,
+  entry: {
+    index: 'src/index.ts',
+    e2e: 'src/e2e/index.ts',
+  },
   format: ['esm', 'cjs'],
   dts: true,
   sourcemap: true,

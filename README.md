@@ -29,15 +29,57 @@ yarn add interaxtion
 
 ## Usage
 
-### Playwright / Browser Context Testing
+### E2E Testing (Playwright, Puppeteer, WebDriverIO)
 
-For Playwright or other browser automation tools, use the standalone browser bundle that can be injected into the page:
+**✨ Recommended:** Use the unified E2E API that works across all test frameworks:
+
+```typescript
+import { analyze } from 'interaxtion/e2e'
+import { test, expect } from '@playwright/test'
+
+test('page is accessible', async ({ page }) => {
+  await page.goto('https://your-app.com')
+
+  // Auto-detects your test framework and runs analysis
+  const results = await analyze(page)
+
+  expect(results.summary.errors).toBe(0)
+})
+```
+
+**With options:**
+
+```typescript
+const results = await analyze(page, {
+  patterns: ['dialog'],        // Only check dialogs
+  minConfidence: 'high',       // Only high-confidence matches
+  selector: '#my-dialog',      // Analyze specific element
+})
+```
+
+**Convenience helpers:**
+
+```typescript
+import { hasErrors, getErrorCount } from 'interaxtion/e2e'
+
+// Quick boolean check
+if (await hasErrors(page)) {
+  console.log('Accessibility issues found!')
+}
+
+// Get error count
+const errors = await getErrorCount(page)
+console.log(`Found ${errors} errors`)
+```
+
+### Advanced: Manual Browser Bundle Injection
+
+For custom setups, you can manually inject the browser bundle:
 
 ```typescript
 import { test, expect } from '@playwright/test'
 
 test('dialog is accessible', async ({ page }) => {
-  // Navigate to your page
   await page.goto('https://your-app.com')
 
   // Inject the interaxtion browser bundle
@@ -51,9 +93,7 @@ test('dialog is accessible', async ({ page }) => {
     return runner.run()
   })
 
-  // Assert no accessibility errors
   expect(results.summary.errors).toBe(0)
-  expect(results.summary.patternsFound).toBeGreaterThan(0)
 })
 ```
 
