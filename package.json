@@ -1,6 +1,6 @@
 {
   "name": "interaxtion",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Framework-agnostic analyzer for automated accessibility testing.",
   "type": "module",
   "license": "MIT",
